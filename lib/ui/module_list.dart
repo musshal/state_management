@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:set_state/provider/done_module_provider.dart';
 
 import 'module_tile.dart';
 
@@ -27,15 +29,17 @@ class _ModuleListState extends State<ModuleList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: (context, index) {
-      return ModuleTile(
-        moduleName: _moduleList[index],
-        isDone: widget.doneModuleList.contains(_moduleList[index]),
-        onClick: () {
-          setState(() {
-            widget.doneModuleList.add(_moduleList[index]);
-          });
-        });
-    }, itemCount: _moduleList.length,);
+    return ListView.builder(
+        itemBuilder: (context, index) {
+          return Consumer(
+              builder: (context, DoneModuleProvider data, widget) {
+                return ModuleTile(
+                    moduleName: _moduleList[index],
+                    isDone: data.doneModuleList.contains(_moduleList[index]),
+                    onClick: () {
+                      data.complete(_moduleList[index]);
+                    });
+              });
+        }, itemCount: _moduleList.length,);
   }
 }
